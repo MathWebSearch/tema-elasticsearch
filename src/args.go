@@ -8,8 +8,9 @@ import (
 
 // Args represents command-line arguments
 type Args struct {
-	ElasticHost  string
-	ElasticPort  int
+	ElasticHost string
+	ElasticPort int
+
 	ElasticIndex string
 
 	IndexDir string
@@ -17,7 +18,7 @@ type Args struct {
 
 // ElasticURL returns the url to elasticsearch
 func (args *Args) ElasticURL() string {
-	return fmt.Sprintf("http://%s:%d/", args.ElasticHost, args.ElasticPort)
+	return fmt.Sprintf("http://%s:%d", args.ElasticHost, args.ElasticPort)
 }
 
 // ParseArgs parses arguments from a list of strings
@@ -37,7 +38,8 @@ func ParseArgs(args []string) *Args {
 
 	flagSet.StringVar(&flags.ElasticIndex, "elastic-index", "tema", "Index to use for ElasticSearch")
 
-	flagSet.StringVar(&flags.IndexDir, "index-dir", "/index/", "Directory to use for Indexes")
+	defaultIndexDir := "/index/"
+	flagSet.StringVar(&flags.IndexDir, "index-dir", defaultIndexDir, "Directory to use for Indexes")
 
 	// parse and exit
 	flagSet.Parse(args[1:])
