@@ -1,8 +1,6 @@
 package sync
 
 import (
-	"fmt"
-
 	"github.com/olivere/elastic"
 )
 
@@ -20,17 +18,17 @@ type Process struct {
 }
 
 // NewProcess creates a new Process
-func NewProcess(Client *elastic.Client, Index string, Folder string) *Process {
+func NewProcess(Client *elastic.Client, Folder string) *Process {
 	return &Process{
 		client: Client,
 
 		// harvests
-		harvestIndex:  Index,
+		harvestIndex:  "tema",
 		harvestType:   "_doc",
 		harvestFolder: Folder,
 
 		// segments
-		segmentIndex: fmt.Sprintf("%s-segments", Index),
+		segmentIndex: "tema-segments",
 		segmentType:  "_doc",
 		segmentField: "segment",
 	}

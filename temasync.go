@@ -5,9 +5,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/MathWebSearch/tema-elasticsearch/src"
-	"github.com/MathWebSearch/tema-elasticsearch/src/db"
-	"github.com/MathWebSearch/tema-elasticsearch/src/sync"
+	"github.com/MathWebSearch/tema-elasticsync/src"
+	"github.com/MathWebSearch/tema-elasticsync/src/db"
+	"github.com/MathWebSearch/tema-elasticsync/src/sync"
 	"github.com/olivere/elastic"
 )
 
@@ -29,7 +29,7 @@ func main() {
 	fmt.Println("Connected. ")
 
 	// make a sync process
-	process := sync.NewProcess(client, args.ElasticIndex, args.IndexDir)
+	process := sync.NewProcess(client, args.IndexDir)
 	process.Run()
 
 	fmt.Println("Finished, exiting. ")

@@ -11,8 +11,6 @@ type Args struct {
 	ElasticHost string
 	ElasticPort int
 
-	ElasticIndex string
-
 	IndexDir string
 }
 
@@ -36,8 +34,6 @@ func ParseArgs(args []string) *Args {
 	flagSet.StringVar(&flags.ElasticHost, "elastic-host", "0.0.0.0", "Host to use for elasticsearch")
 	flagSet.IntVar(&flags.ElasticPort, "elastic-port", 9200, "Port to use for elasticsearch")
 
-	flagSet.StringVar(&flags.ElasticIndex, "elastic-index", "tema", "Index to use for ElasticSearch")
-
 	defaultIndexDir := "/index/"
 	flagSet.StringVar(&flags.IndexDir, "index-dir", defaultIndexDir, "Directory to use for Indexes")
 
@@ -56,12 +52,6 @@ func (args *Args) Validate() bool {
 		return false
 	}
 	fmt.Printf("elastic-port: %d\n", args.ElasticPort)
-
-	if args.ElasticIndex == "" {
-		fmt.Println("elastic-index: May not be empty")
-		return false
-	}
-	fmt.Printf("elastic-index: %q\n", args.ElasticIndex)
 
 	if !ensureDirectory(args.IndexDir) {
 		fmt.Printf("index-dir: %q is not a directory\n", args.IndexDir)
