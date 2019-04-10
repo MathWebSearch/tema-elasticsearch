@@ -6,12 +6,6 @@ import (
 	"github.com/MathWebSearch/tema-elasticsearch/src/db"
 )
 
-type mwsMetaJSON struct {
-	Index struct {
-		ID string `json:"_id"`
-	} `json:"index"`
-}
-
 // insertSegmentHarvests inserts a segment
 func (proc *Process) insertSegmentHarvests(segment string) error {
 	store := make(chan map[string]interface{})
@@ -19,14 +13,7 @@ func (proc *Process) insertSegmentHarvests(segment string) error {
 
 	// start processing async
 	go func() {
-		e := processLinePairs(segment, true, func(metaLine string, contentLine string) (err error) {
-			// unmarshal the meta json
-			var meta mwsMetaJSON
-			err = json.Unmarshal([]byte(metaLine), &meta)
-			if err != nil {
-				return
-			}
-
+		e := processLinePairs(segment, true, func(_, contentLine string) (err error) {
 			// unmarshal the content
 			var content map[string]interface{}
 			err = json.Unmarshal([]byte(contentLine), &content)

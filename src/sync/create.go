@@ -1,35 +1,33 @@
 package sync
 
 import (
-	"fmt"
-
 	"github.com/MathWebSearch/tema-elasticsearch/src/db"
 )
 
 // createIndex creates an index to prepare for segmented updates
 func (proc *Process) createIndex() (err error) {
-	fmt.Printf("Creating Harvest Index %s ... ", proc.harvestIndex)
+	proc.printf("Creating Harvest Index %s ... ", proc.harvestIndex)
 	created, err := db.CreateIndex(proc.client, proc.harvestIndex, proc.makeHarvestMapping())
 	if err != nil {
-		fmt.Println("ERROR")
+		proc.printlnERROR("ERROR")
 		return
 	}
 	if created {
-		fmt.Println("OK")
+		proc.printlnOK("OK")
 	} else {
-		fmt.Println("SKIP")
+		proc.printlnOK("SKIP")
 	}
 
-	fmt.Printf("Creating Segment Index %s ... ", proc.segmentIndex)
+	proc.printf("Creating Segment Index %s ... ", proc.segmentIndex)
 	created, err = db.CreateIndex(proc.client, proc.segmentIndex, proc.makeSegmentMapping())
 	if err != nil {
-		fmt.Println("ERROR")
+		proc.printlnERROR("ERROR")
 		return
 	}
 	if created {
-		fmt.Println("OK")
+		proc.printlnOK("OK")
 	} else {
-		fmt.Println("SKIP")
+		proc.printlnOK("SKIP")
 	}
 
 	return

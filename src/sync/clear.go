@@ -1,21 +1,19 @@
 package sync
 
 import (
-	"fmt"
-
 	"github.com/MathWebSearch/tema-elasticsearch/src/db"
 	"github.com/olivere/elastic"
 )
 
 // clearSegments clears untouched (old) segments from the index
 func (proc *Process) clearSegments() (err error) {
-	fmt.Println("Removing old segments ...")
+	proc.println("Removing old segments ...")
 
 	q := elastic.NewBoolQuery()
 	q = q.Must(elastic.NewTermQuery("touched", false))
 
 	old, err := db.FetchObjects(proc.client, proc.segmentIndex, proc.segmentType, q)
-	if err != nil {
+	if err == nil {
 		for so := range old {
 			e := proc.clearSegment(so)
 			if e != nil {
@@ -25,9 +23,9 @@ func (proc *Process) clearSegments() (err error) {
 	}
 
 	if err == nil {
-		fmt.Println("OK")
+		proc.printlnOK("OK")
 	} else {
-		fmt.Println("ERROR")
+		proc.printlnERROR("ERROR")
 	}
 
 	return
@@ -36,24 +34,24 @@ func (proc *Process) clearSegments() (err error) {
 // clearSegment removes a single segment
 func (proc *Process) clearSegment(so *db.ECObject) (err error) {
 	segment := so.Fields[proc.segmentField].(string)
-	fmt.Printf("=> %s\n", segment)
+	proc.printf("=> %s\n", segment)
 
 	// clear the harvests
-	fmt.Print("  Clearing harvests belonging to segment ... ")
+	proc.print("  Clearing harvests belonging to segment ... ")
 	err = proc.clearSegmentHarvests(segment)
 	if err != nil {
-		fmt.Println("ERROR")
+		proc.printlnERROR("ERROR")
 		return
 	}
-	fmt.Println("OK")
+	proc.printlnOK("OK")
 
 	// and remove segment itself
-	fmt.Print("  Removing segment ...")
+	proc.print("  Removing segment ... ")
 	err = so.Delete()
 	if err == nil {
-		fmt.Println("OK")
+		proc.printlnOK("OK")
 	} else {
-		fmt.Println("ERROR")
+		proc.printlnERROR("ERROR")
 	}
 
 	return
