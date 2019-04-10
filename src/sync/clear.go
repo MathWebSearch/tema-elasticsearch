@@ -12,13 +12,11 @@ func (proc *Process) clearSegments() (err error) {
 	q := elastic.NewBoolQuery()
 	q = q.Must(elastic.NewTermQuery("touched", false))
 
-	old, err := db.FetchObjects(proc.client, proc.segmentIndex, proc.segmentType, q)
-	if err == nil {
-		for so := range old {
-			e := proc.clearSegment(so)
-			if e != nil {
-				err = e
-			}
+	old := db.FetchObjects(proc.client, proc.segmentIndex, proc.segmentType, q)
+	for so := range old {
+		e := proc.clearSegment(so)
+		if e != nil {
+			err = e
 		}
 	}
 
@@ -62,5 +60,6 @@ func (proc *Process) clearSegment(so *db.ECObject) (err error) {
 func (proc *Process) clearSegmentHarvests(segment string) error {
 	q := elastic.NewBoolQuery()
 	q = q.Must(elastic.NewTermQuery(proc.segmentField, segment))
+
 	return db.DeleteBulk(proc.client, proc.harvestIndex, proc.harvestType, q)
 }

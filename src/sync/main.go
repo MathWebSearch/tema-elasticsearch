@@ -50,14 +50,32 @@ func (proc *Process) Run() {
 		panic(err)
 	}
 
+	// refresh all the indexes
+	err = proc.refreshIndex()
+	if err != nil {
+		panic(err)
+	}
+
 	// upsert segments
 	err = proc.upsertSegments()
 	if err != nil {
 		panic(err)
 	}
 
+	// refresh all the indexes
+	err = proc.refreshIndex()
+	if err != nil {
+		panic(err)
+	}
+
 	// clear old segements
 	err = proc.clearSegments()
+	if err != nil {
+		panic(err)
+	}
+
+	// flush all the indexes
+	err = proc.flushIndex()
 	if err != nil {
 		panic(err)
 	}

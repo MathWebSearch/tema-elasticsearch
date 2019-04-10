@@ -76,3 +76,27 @@ func CreateIndex(client *elastic.Client, index string, mapping interface{}) (cre
 
 	return
 }
+
+// RefreshIndex refreshes an index
+func RefreshIndex(client *elastic.Client, indices ...string) (err error) {
+	ctx := context.Background()
+	res, err := client.Refresh(indices...).Do(ctx)
+
+	if err == nil && res.Shards.Successful <= 0 {
+		err = errors.New("Refresh() reported 0 successful shards")
+	}
+
+	return
+}
+
+// FlushIndex flushes an index
+func FlushIndex(client *elastic.Client, indices ...string) (err error) {
+	ctx := context.Background()
+	res, err := client.Flush(indices...).Do(ctx)
+
+	if err == nil && res.Shards.Successful <= 0 {
+		err = errors.New("Flush() reported 0 successful shards")
+	}
+
+	return
+}

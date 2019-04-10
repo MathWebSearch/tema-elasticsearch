@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"errors"
+	"io"
 
 	"github.com/olivere/elastic"
 )
@@ -33,41 +33,41 @@ func CreateObject(client *elastic.Client, index string, tp string, Fields map[st
 }
 
 // FetchObjects fetches objects subject to an exact query
-func FetchObjects(client *elastic.Client, index string, tp string, query elastic.Query) (<-chan *ECObject, error) {
-	// run the query in the background
+func FetchObjects(client *elastic.Client, index string, tp string, query elastic.Query) <-chan *ECObject {
+
 	ctx := context.Background()
-	result, err := client.Search(index).Type(tp).Query(query).Do(ctx)
+	scroll := client.Scroll(index).Type(tp).Query(query)
 
-	if err == nil && result.TimedOut {
-		err = errors.New("Search() returned TimedOut=true")
-	}
-
-	// bail out if we have an error
-	if err != nil {
-		return nil, err
-	}
-
-	results := make(chan *ECObject)
+	hits := make(chan *ECObject)
 
 	go func() {
-		for _, hit := range result.Hits.Hits {
-			obj := &ECObject{client, index, tp, hit.Id, nil}
-			obj.setSource(hit.Source)
-			results <- obj
+		defer close(hits)
+
+		for {
+			results, err := scroll.Do(ctx)
+			if err == io.EOF {
+				return
+			}
+			if err != nil {
+				return
+			}
+
+			for _, hit := range results.Hits.Hits {
+				obj := &ECObject{client, index, tp, hit.Id, nil}
+				obj.setSource(hit.Source)
+				hits <- obj
+			}
 		}
-		close(results)
+
 	}()
 
-	return results, nil
+	return hits
 }
 
 // FetchObject fetches a single object from the database or returns nil
 func FetchObject(client *elastic.Client, index string, tp string, query elastic.Query) (obj *ECObject, err error) {
 	// make a query
-	results, err := FetchObjects(client, index, tp, query)
-	if err != nil {
-		return
-	}
+	results := FetchObjects(client, index, tp, query)
 
 	// fetch the candidate
 	for candidate := range results {
