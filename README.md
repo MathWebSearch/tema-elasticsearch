@@ -1,6 +1,6 @@
 # tema-elasticsync
 
-[![Build Status](https://travis-ci.org/MathWebSearch/mws-temasync.svg?branch=master)](https://travis-ci.org/MathWebSearch/mws-temasync)
+[![Build Status](https://travis-ci.org/MathWebSearch/tema-elasticsync.svg?branch=master)](https://travis-ci.org/MathWebSearch/tema-elasticsync)
 
 A component configuring and maintaining an elasticsearch instance for use with TemaSearch. 
 
