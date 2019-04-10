@@ -4,8 +4,8 @@ FROM golang:1-alpine as builder
 RUN apk add --no-cache make git
 
 # Build this updater
-ADD . /go/src/github.com/MathWebSearch/tema-elasticsearch
-WORKDIR /go/src/github.com/MathWebSearch/tema-elasticsearch
+ADD . /go/src/github.com/MathWebSearch/tema-elasticsync
+WORKDIR /go/src/github.com/MathWebSearch/tema-elasticsync
 RUN make build-local
 
 # Start with elasticsearch
@@ -13,7 +13,7 @@ FROM elasticsearch:6.7.0 as final
 
 # Add all the files
 ADD /scripts/ /mws/
-COPY --from=builder /go/src/github.com/MathWebSearch/tema-elasticsearch/out/tema_hook /mws/tema_hook
+COPY --from=builder /go/src/github.com/MathWebSearch/tema-elasticsync/out/tema-elasticsync /mws/tema-elasticsync
 
 # Set a single instanmce
 ENV discovery.type=single-node

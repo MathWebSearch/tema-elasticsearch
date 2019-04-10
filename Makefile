@@ -10,7 +10,7 @@ GOFLAGS=-a
 
 # Binary paths
 OUT_DIR=out
-BINARY_NAME=temasync
+BINARY_NAME=tema-elasticsync
 BINARY_UNIX=$(BINARY_NAME)_unix
 BINARY_MACOS=$(BINARY_NAME)_mac
 BINARY_WINDOWS=$(BINARY_NAME)_windows.exe
