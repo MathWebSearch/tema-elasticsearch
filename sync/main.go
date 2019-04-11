@@ -1,7 +1,7 @@
 package sync
 
 import (
-	"github.com/olivere/elastic"
+	"gopkg.in/olivere/elastic.v6"
 )
 
 // Process represent args to the syncronisation process

@@ -1,13 +1,11 @@
 package sync
 
-import (
-	"github.com/MathWebSearch/tema-elasticsearch/src/db"
-)
+import "github.com/MathWebSearch/elasticutils"
 
 // createIndex creates an index to prepare for segmented updates
 func (proc *Process) createIndex() (err error) {
 	proc.printf("Creating Harvest Index %s ... ", proc.harvestIndex)
-	created, err := db.CreateIndex(proc.client, proc.harvestIndex, proc.makeHarvestMapping())
+	created, err := elasticutils.CreateIndex(proc.client, proc.harvestIndex, proc.makeHarvestMapping())
 	if err != nil {
 		proc.printlnERROR("ERROR")
 		return
@@ -19,7 +17,7 @@ func (proc *Process) createIndex() (err error) {
 	}
 
 	proc.printf("Creating Segment Index %s ... ", proc.segmentIndex)
-	created, err = db.CreateIndex(proc.client, proc.segmentIndex, proc.makeSegmentMapping())
+	created, err = elasticutils.CreateIndex(proc.client, proc.segmentIndex, proc.makeSegmentMapping())
 	if err != nil {
 		proc.printlnERROR("ERROR")
 		return

@@ -5,31 +5,31 @@ import (
 	"os"
 	"time"
 
-	"github.com/MathWebSearch/tema-elasticsync/src"
-	"github.com/MathWebSearch/tema-elasticsync/src/db"
-	"github.com/MathWebSearch/tema-elasticsync/src/sync"
-	"github.com/olivere/elastic"
+	"github.com/MathWebSearch/elasticutils"
+	"github.com/MathWebSearch/tema-elasticsync/args"
+	"github.com/MathWebSearch/tema-elasticsync/sync"
+	"gopkg.in/olivere/elastic.v6"
 )
 
 func main() {
 	// parse and validate arguments
-	args := src.ParseArgs(os.Args)
-	if !args.Validate() {
+	a := args.ParseArgs(os.Args)
+	if !a.Validate() {
 		os.Exit(1)
 		return
 	}
 
 	// connect to the database
-	url := args.ElasticURL()
+	url := a.ElasticURL()
 	fmt.Printf("Connecting to %q ...\n", url)
 
-	client := db.Connect(5*time.Second, func(e error) {
+	client := elasticutils.Connect(5*time.Second, func(e error) {
 		fmt.Printf("  Unable to connect: %s. Trying again in 5 seconds. \n", e)
 	}, elastic.SetURL(url), elastic.SetSniff(false))
 	fmt.Println("Connected. ")
 
 	// make a sync process
-	process := sync.NewProcess(client, args.IndexDir)
+	process := sync.NewProcess(client, a.IndexDir)
 	process.Run()
 
 	fmt.Println("Finished, exiting. ")

@@ -3,7 +3,7 @@ package sync
 import (
 	"encoding/json"
 
-	"github.com/MathWebSearch/tema-elasticsearch/src/db"
+	"github.com/MathWebSearch/elasticutils"
 )
 
 // insertSegmentHarvests inserts a segment
@@ -38,7 +38,7 @@ func (proc *Process) insertSegmentHarvests(segment string) error {
 	}()
 
 	// run the insert and get the errors
-	bulkError := db.CreateBulk(proc.client, proc.harvestIndex, proc.harvestType, store)
+	bulkError := elasticutils.CreateBulk(proc.client, proc.harvestIndex, proc.harvestType, store)
 	parseError := <-errChan
 
 	// return the parser error

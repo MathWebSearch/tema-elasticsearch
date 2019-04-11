@@ -1,12 +1,12 @@
 package sync
 
 import (
-	"github.com/MathWebSearch/tema-elasticsearch/src/db"
+	"github.com/MathWebSearch/elasticutils"
 )
 
 func (proc *Process) refreshIndex() error {
 	proc.print("Refreshing elasticsearch ... ")
-	err := db.RefreshIndex(proc.client, proc.segmentIndex, proc.harvestIndex)
+	err := elasticutils.RefreshIndex(proc.client, proc.segmentIndex, proc.harvestIndex)
 
 	if err == nil {
 		proc.printlnOK("OK")
@@ -19,7 +19,7 @@ func (proc *Process) refreshIndex() error {
 
 func (proc *Process) flushIndex() error {
 	proc.print("Flushing elasticsearch ... ")
-	err := db.FlushIndex(proc.client, proc.segmentIndex, proc.harvestIndex)
+	err := elasticutils.FlushIndex(proc.client, proc.segmentIndex, proc.harvestIndex)
 
 	if err == nil {
 		proc.printlnOK("OK")

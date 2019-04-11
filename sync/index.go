@@ -6,13 +6,12 @@ import (
 	"io"
 	"os"
 
-	"github.com/MathWebSearch/tema-elasticsearch/src/db"
-
-	"github.com/olivere/elastic"
+	"github.com/MathWebSearch/elasticutils"
+	"gopkg.in/olivere/elastic.v6"
 )
 
 // checkSegmentIndex checks the segment index for a given segment
-func (proc *Process) checkSegmentIndex(segment string) (obj *db.ECObject, created bool, err error) {
+func (proc *Process) checkSegmentIndex(segment string) (obj *elasticutils.Object, created bool, err error) {
 	// the query
 	q := elastic.NewBoolQuery()
 	q = q.Must(elastic.NewTermQuery(proc.segmentField, segment))
@@ -24,7 +23,7 @@ func (proc *Process) checkSegmentIndex(segment string) (obj *db.ECObject, create
 	fields["touched"] = true
 
 	// and fetch or create it from the index
-	return db.FetchOrCreateObject(proc.client, proc.segmentIndex, proc.segmentType, q, fields)
+	return elasticutils.FetchOrCreateObject(proc.client, proc.segmentIndex, proc.segmentType, q, fields)
 }
 
 // hashSegment computes the hash of a segment
