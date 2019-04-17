@@ -4,7 +4,7 @@
 /usr/local/bin/docker-entrypoint.sh "$@" &
 ELASTICPID=$!
 
-/mws/tema-elasticsync &
+/mws/elasticsync &
 SYNCPID=$!
 
 # Trap signals to kill elastic sync
